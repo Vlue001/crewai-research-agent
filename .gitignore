@@ -206,6 +206,11 @@ tempCodeRunnerFile.py
 # Ruff stuff:
 .ruff_cache/
 
+# Generated research reports (keep the directory, ignore the output files)
+outputs/*.md
+# ...but keep one committed example so the repo shows real output
+!outputs/sample_report.md
+
 # PyPI configuration file
 .pypirc
 
