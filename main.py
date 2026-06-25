@@ -60,6 +60,14 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
+def find_new_reports(before: set[Path]) -> list[Path]:
+    """Return .md files in outputs/ that did not exist before the run."""
+    outputs = Path("outputs")
+    if not outputs.is_dir():
+        return []
+    return sorted(set(outputs.glob("*.md")) - before)
+
+
 def main() -> None:
     args = parse_args()
     topic = args.topic.strip()
@@ -70,6 +78,7 @@ def main() -> None:
 
     check_api_keys()
     Path("outputs").mkdir(exist_ok=True)
+    existing_reports: set[Path] = set(Path("outputs").glob("*.md"))
 
     print(f"\nStarting research on: {topic}")
     print("This may take a few minutes...\n")
@@ -86,7 +95,12 @@ def main() -> None:
 
     print("\n" + "=" * 60)
     print("Research complete!")
-    print("Report saved to the outputs/ directory.")
+    new_reports = find_new_reports(existing_reports)
+    if new_reports:
+        for path in new_reports:
+            print(f"Report saved to: {path}")
+    else:
+        print("Report saved to the outputs/ directory.")
     print("=" * 60)
 
     if args.verbose:
